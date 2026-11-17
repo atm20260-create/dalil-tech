@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دليل التقنية للجميع</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: one column, big touch targets. Home = lesson list; lesson = one step per screen with back/next. */
+:root {
+  --bg: #F2F6F7;
+  --surface: #FFFFFF;
+  --fg: #11262B;
+  --muted: #4A6168;
+  --line: #CBD8DB;
+  --accent: #0A6B73;
+  --accent-fg: #FFFFFF;
+  --tip-bg: #E3F1F2;
+  --warn-bg: #FFF0D6;
+  --warn-fg: #6B3E00;
+  --good: #14702F;
+  --bad: #A3261F;
+  --font: "Tajawal", "Segoe UI", Tahoma, Arial, sans-serif;
+  --scale: 1;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D1A1D; --surface: #162529; --fg: #EAF3F4; --muted: #9FB5BA; --line: #2B4248;
+    --accent: #5CC8CE; --accent-fg: #07262A; --tip-bg: #1B3A3F; --warn-bg: #3A2A10; --warn-fg: #FFD9A0;
+    --good: #66D184; --bad: #FF8A80; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D1A1D; --surface: #162529; --fg: #EAF3F4; --muted: #9FB5BA; --line: #2B4248;
+  --accent: #5CC8CE; --accent-fg: #07262A; --tip-bg: #1B3A3F; --warn-bg: #3A2A10; --warn-fg: #FFD9A0;
+  --good: #66D184; --bad: #FF8A80; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font);
+  font-size: calc(20px * var(--scale)); line-height: 1.7;
+  padding-block: 12px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { font-weight: 800; font-size: 1.15em; margin: 0; }
+.sizes { display: flex; gap: 8px; align-items: center; }
+.sizes span { color: var(--muted); font-size: .8em; }
+button { font-family: inherit; font-size: inherit; cursor: pointer; }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.chip {
+  min-width: 52px; min-height: 48px; padding: 0 14px; border-radius: 12px;
+  border: 2px solid var(--line); background: var(--surface); color: var(--fg); font-weight: 700;
+}
+h1 { font-size: 1.7em; line-height: 1.3; margin: 0; font-weight: 800; text-wrap: balance; }
+h2 { font-size: 1.35em; line-height: 1.35; margin: 0; font-weight: 800; text-wrap: balance; }
+p { margin: 0; }
+.lead { color: var(--muted); }
+.list { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 640px) { .list { grid-template-columns: 1fr 1fr; } }
+.card {
+  text-align: right; width: 100%; background: var(--surface); color: var(--fg);
+  border: 2px solid var(--line); border-radius: 16px; padding: 18px;
+  display: flex; flex-direction: column; gap: 10px; min-height: 150px;
+}
+.card:hover { border-color: var(--accent); }
+.card .t { font-weight: 800; font-size: 1.1em; }
+.card .s { color: var(--muted); font-size: .85em; line-height: 1.5; }
+.meter { height: 10px; border-radius: 6px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.stat { font-size: .8em; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.done { color: var(--good); font-weight: 700; }
+.step {
+  background: var(--surface); border: 2px solid var(--line); border-radius: 16px;
+  padding: 22px; display: flex; flex-direction: column; gap: 16px;
+}
+.kicker { color: var(--muted); font-size: .8em; font-weight: 700; letter-spacing: .02em; }
+.box { border-radius: 12px; padding: 14px 16px; font-size: .9em; background: var(--tip-bg); }
+.box.warn { background: var(--warn-bg); color: var(--warn-fg); }
+.box b { font-weight: 800; }
+.nav { display: flex; gap: 12px; }
+.nav button { flex: 1; min-height: 60px; border-radius: 14px; font-weight: 800; border: 2px solid var(--accent); }
+.btn-main { background: var(--accent); color: var(--accent-fg); }
+.btn-alt { background: var(--surface); color: var(--accent); }
+.nav button:disabled { opacity: .4; cursor: default; }
+.back { align-self: flex-start; background: none; border: 0; color: var(--accent); font-weight: 700; padding: 8px 0; min-height: 48px; }
+.listen { align-self: flex-start; min-height: 48px; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); color: var(--fg); padding: 0 16px; font-weight: 700; }
+.opts { display: flex; flex-direction: column; gap: 12px; }
+.opt { text-align: right; min-height: 60px; padding: 12px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--surface); color: var(--fg); }
+.opt.ok { border-color: var(--good); }
+.opt.no { border-color: var(--bad); }
+.fb { font-weight: 800; }
+.fb.ok { color: var(--good); }
+.fb.no { color: var(--bad); }
+.foot { color: var(--muted); font-size: .75em; }
+@media (prefers-reduced-motion: no-preference) { .meter i { transition: width .3s; } }
+body{margin:0}
+[hidden]{display:none!important}
+</style>
+
+</head>
+<body>
+<div class="wrap" dir="rtl" lang="ar" id="app"></div>
+
+<script>
+document.documentElement.dir = "rtl";
+document.documentElement.lang = "ar";
+
+var LESSONS = [
+  {
+    id: "google", title: "فتح حساب جوجل", sub: "حساب واحد يفتح لك البريد والفيديو والخرائط ويوتيوب.",
+    steps: [
+      { t: "جهّز ما تحتاجه", x: "تحتاج هاتفاً أو حاسوباً متصلاً بالإنترنت، ورقم هاتفك، وورقة وقلماً لكتابة كلمة السر.", tip: "خذ وقتك. لا يوجد استعجال، ويمكنك الرجوع إلى أي خطوة." },
+      { t: "افتح صفحة إنشاء الحساب", x: "افتح متصفح الإنترنت (مثل كروم). في خانة البحث في أعلى الشاشة اكتب: إنشاء حساب جوجل. ثم اضغط على النتيجة الأولى.", tip: "قد تختلف الشاشة قليلاً من هاتف إلى آخر، لكن الخطوات واحدة." },
+      { t: "اكتب اسمك", x: "اكتب اسمك الأول في الخانة الأولى، واسم العائلة في الخانة الثانية. ثم اضغط «التالي»." },
+      { t: "تاريخ الميلاد والجنس", x: "اختر اليوم والشهر والسنة، ثم اختر الجنس. هذه المعلومات لا تظهر للناس.", tip: "اكتب تاريخ ميلادك الحقيقي وتذكّره. قد تحتاجه إذا نسيت كلمة السر." },
+      { t: "اختر عنوان بريدك", x: "سيعرض عليك جوجل عناوين جاهزة. اختر واحداً منها، أو اكتب عنواناً بنفسك بحروف إنجليزية وأرقام، مثل: ahmed.ali2026. سينتهي عنوانك بـ gmail.com.", tip: "إذا كان العنوان مأخوذاً من شخص آخر، سيخبرك جوجل. جرّب إضافة رقم." },
+      { t: "اختر كلمة سر", x: "اكتب كلمة سر من ١٢ حرفاً أو أكثر، ثم أعد كتابتها في الخانة الثانية. اكتبها على ورقة واحفظها في مكان آمن في البيت.", warn: "لا تستخدم تاريخ ميلادك ولا رقم هاتفك." },
+      { t: "تأكيد رقم الهاتف", x: "سيرسل جوجل رسالة نصية فيها رمز من ست أرقام. اكتب الرمز في الخانة التي يطلبها.", warn: "هذا الرمز لك وحدك. لا تعطه لأي شخص، حتى لو اتصل بك وقال إنه من جوجل." },
+      { t: "وافق وانتهِ", x: "اقرأ الشروط ثم اضغط «أوافق». مبروك! أصبح لديك حساب جوجل. يمكنك الآن استخدامه في البريد (جيميل) ويوتيوب والخرائط.", tip: "اكتب عنوان بريدك على الورقة مع كلمة السر." }
+    ],
+    quiz: { q: "أرسل لك جوجل رمزاً من ست أرقام. ماذا تفعل؟", o: ["أعطيه لمن يتصل بي ويطلبه", "أكتبه في الصفحة التي طلبته فقط، ولا أعطيه لأحد", "أنشره في فيسبوك"], a: 1 }
+  },
+  {
+    id: "password", title: "كلمة سر قوية", sub: "كيف تحمي حسابك وصورك ورسائلك.",
+    steps: [
+      { t: "لماذا كلمة السر مهمة", x: "كلمة السر مثل مفتاح بيتك. من يملكها يدخل إلى رسائلك وصورك وحسابك." },
+      { t: "اجعلها طويلة", x: "١٢ حرفاً أو أكثر. الأسهل أن تجمع ثلاث كلمات لا علاقة بينها وتضيف رقماً. مثال: نخلة قمر مطر 7", tip: "الكلمة الطويلة أصعب على المحتال من كلمة قصيرة فيها رموز كثيرة." },
+      { t: "لا تستخدم ما يعرفه الناس", x: "لا اسمك، ولا تاريخ ميلادك، ولا رقم هاتفك، ولا أسماء أولادك. هذه أول ما يجرّبه المحتال.", warn: "ولا تستخدم 1234 أو 0000." },
+      { t: "كلمة سر مختلفة لكل حساب", x: "إذا سرق أحد كلمة سر واحدة، لا يستطيع أن يفتح بها بقية حساباتك." },
+      { t: "اكتبها واحفظها", x: "اكتبها في دفتر صغير واتركه في البيت. لا تصوّرها ولا ترسلها لأحد.", warn: "لا تعطها لأحد حتى لو قال إنه من جوجل أو من البنك." },
+      { t: "التحقق بخطوتين", x: "في إعدادات حسابك يمكنك تشغيل «التحقق بخطوتين». عند الدخول من جهاز جديد يرسل جوجل رمزاً إلى هاتفك. فلا يكفي أن يعرف أحد كلمة السر.", tip: "إذا وجدت صعوبة، اطلب من شخص تثق به أن يجلس معك أثناء تشغيلها." }
+    ],
+    quiz: { q: "أي كلمة سر أقوى؟", o: ["1234567890", "تاريخ ميلادي", "نخلة قمر مطر 7"], a: 2 }
+  },
+  {
+    id: "scam", title: "الحذر من الاحتيال", sub: "كيف تعرف الرسالة المزيفة قبل أن تفعل ما يطلبه المحتال.",
+    steps: [
+      { t: "كيف يخدعك المحتال", x: "يرسل رسالة أو يتصل ويقول: ربحت جائزة، أو حسابك سيُغلق، أو أنا من البنك. يريدك أن تفرح أو تخاف بسرعة فتفعل ما يطلبه." },
+      { t: "لا تعطِ الرموز أبداً", x: "لا جوجل ولا البنك ولا واتساب يطلب منك الرمز الذي وصلك في رسالة.", warn: "من يطلب الرمز هو محتال، مهما كان كلامه لطيفاً." },
+      { t: "لا تضغط على الروابط الغريبة", x: "الرابط في رسالة من شخص لا تعرفه قد يأخذك إلى صفحة مزيفة تشبه الصفحة الحقيقية. افتح التطبيق أو الموقع بنفسك بدل الضغط على الرابط." },
+      { t: "لا ترسل مالاً بسرعة", x: "إذا طلب منك أحد مالاً بسرعة، حتى لو قال إنه قريبك، اتصل به أولاً على رقمه القديم الذي تعرفه.", tip: "المحتال يستعجلك لأنه لا يريدك أن تفكر." },
+      { t: "إن شككت، توقّف واسأل", x: "اترك الرسالة ولا ترد عليها. اسأل شخصاً تثق به من أهلك أو أصدقائك. لا عيب في السؤال." }
+    ],
+    quiz: { q: "وصلتك رسالة: «ربحت جائزة، اضغط هنا». ماذا تفعل؟", o: ["أضغط بسرعة قبل أن تضيع الجائزة", "أتجاهلها وأسأل شخصاً أثق به", "أعطيهم رقم هاتفي وكلمة سري"], a: 1 }
+  },
+  {
+    id: "mail", title: "إرسال بريد إلكتروني", sub: "اكتب رسالة وأرسلها بجيميل، مع صورة إن أردت.",
+    steps: [
+      { t: "افتح جيميل", x: "اضغط على تطبيق Gmail، أيقونته مغلف أبيض وفيه خط أحمر. إذا لم يكن عندك، حمّله من متجر التطبيقات (Play Store في أندرويد، App Store في آيفون)." },
+      { t: "اضغط «إنشاء»", x: "ستجد زراً فيه كلمة «إنشاء» أو علامة قلم. اضغط عليه لتفتح رسالة جديدة." },
+      { t: "اكتب عنوان الشخص", x: "في خانة «إلى» اكتب عنوان الشخص، مثل: name@gmail.com.", tip: "تأكد أنك كتبته صحيحاً. حرف واحد خطأ يرسل الرسالة إلى شخص آخر." },
+      { t: "الموضوع والرسالة", x: "في خانة «الموضوع» اكتب كلمات قليلة عن الرسالة. ثم اكتب رسالتك في المساحة الكبيرة تحتها." },
+      { t: "اضغط إرسال", x: "اضغط على السهم الصغير أو كلمة «إرسال». ستجد رسالتك في قسم «المرسَلة». لإرفاق صورة، اضغط على أيقونة مشبك الورق قبل الإرسال.", tip: "الرسالة بعد الإرسال لا يمكن تعديلها، فراجعها قبل الضغط." }
+    ],
+    quiz: { q: "في أي خانة نكتب عنوان الشخص الذي نرسل له؟", o: ["الموضوع", "إلى", "المرسَلة"], a: 1 }
+  },
+  {
+    id: "video", title: "مكالمة فيديو", sub: "شاهد أهلك وأصدقاءك بالصوت والصورة عبر واتساب.",
+    steps: [
+      { t: "تأكد من الإنترنت", x: "مكالمة الفيديو تحتاج إنترنت جيداً. اتصل بشبكة واي فاي إن وجدت، لأن الفيديو يستهلك رصيد الإنترنت بسرعة." },
+      { t: "افتح واتساب واختر الشخص", x: "افتح تطبيق واتساب (أيقونة خضراء). اضغط على اسم الشخص الذي تريد الاتصال به لتفتح المحادثة." },
+      { t: "اضغط أيقونة الكاميرا", x: "في أعلى المحادثة ستجد أيقونة كاميرا صغيرة. اضغط عليها واختر «مكالمة فيديو»، ثم انتظر حتى يرد." },
+      { t: "أثناء المكالمة", x: "أمسك الهاتف أمام وجهك في مكان فيه ضوء. تستطيع إيقاف الصوت أو الكاميرا بالأزرار في أسفل الشاشة.", tip: "اسند الهاتف على شيء ثابت حتى لا تتعب يدك." },
+      { t: "أنهِ المكالمة", x: "اضغط على الزر الأحمر لإنهاء المكالمة." }
+    ],
+    quiz: { q: "كيف تنهي مكالمة الفيديو؟", o: ["أضغط الزر الأحمر", "أطفئ الهاتف", "أرسل رسالة"], a: 0 }
+  }
+];
+
+var S = {};
+try { S = JSON.parse(localStorage.getItem("dalil") || "{}") || {}; } catch (e) { S = {}; }
+if (!S.prog) S.prog = {};
+if (!S.scale) S.scale = 1;
+function save() { try { localStorage.setItem("dalil", JSON.stringify(S)); } catch (e) {} }
+function n(x) { return Number(x).toLocaleString("ar-EG"); }
+function lessonById(id) { for (var i = 0; i < LESSONS.length; i++) if (LESSONS[i].id === id) return LESSONS[i]; return null; }
+
+var V = { id: null, i: 0, pick: null };
+var app = document.getElementById("app");
+var canSpeak = false;
+try { canSpeak = !!(window.speechSynthesis && window.SpeechSynthesisUtterance); } catch (e) {}
+
+function applyScale() { document.documentElement.style.setProperty("--scale", S.scale); }
+
+function topBar() {
+  return '<div class="top"><p class="brand">دليل التقنية للجميع</p>' +
+    '<div class="sizes"><span>حجم الخط</span>' +
+    '<button class="chip" data-act="smaller" aria-label="تصغير الخط">أ-</button>' +
+    '<button class="chip" data-act="bigger" aria-label="تكبير الخط">أ+</button></div></div>';
+}
+
+function renderHome() {
+  var doneCount = 0, cards = "";
+  LESSONS.forEach(function (L) {
+    var p = S.prog[L.id] || { step: 0, done: false };
+    if (p.done) doneCount++;
+    var pct = p.done ? 100 : Math.round(100 * Math.min(p.step, L.steps.length) / (L.steps.length + 1));
+    var stat = p.done ? '<span class="done">أكملت الدرس ✓</span>' : (p.step > 0 ? '<span>وصلت إلى الخطوة ' + n(Math.min(p.step + 1, L.steps.length)) + '</span>' : '<span>لم تبدأ بعد</span>');
+    cards += '<button class="card" data-open="' + L.id + '"><span class="t">' + L.title + '</span><span class="s">' + L.sub + '</span>' +
+      '<span class="meter"><i style="width:' + pct + '%"></i></span>' +
+      '<span class="stat">' + stat + '<span>' + n(L.steps.length) + ' خطوات</span></span></button>';
+  });
+  app.innerHTML = topBar() +
+    '<div><h1>تعلّم التقنية خطوة خطوة</h1><p class="lead">دروس بسيطة لكل من يريد استخدام الهاتف والإنترنت بثقة. اختر درساً، وكل شاشة فيها خطوة واحدة فقط.</p></div>' +
+    '<div class="list">' + cards + '</div>' +
+    '<p class="foot">أكملت ' + n(doneCount) + ' من ' + n(LESSONS.length) + ' دروس. تقدمك محفوظ في هذا الجهاز.</p>';
+}
+
+function renderLesson() {
+  var L = lessonById(V.id), total = L.steps.length + 1, html = "";
+  var head = '<button class="back" data-act="home">→ كل الدروس</button>';
+  var bar = '<div class="meter" aria-hidden="true"><i style="width:' + Math.round(100 * (V.i + 1) / total) + '%"></i></div>';
+  if (V.i < L.steps.length) {
+    var st = L.steps[V.i];
+    html = head + '<h2>' + L.title + '</h2>' + bar +
+      '<div class="step"><span class="kicker">الخطوة ' + n(V.i + 1) + ' من ' + n(L.steps.length) + '</span>' +
+      '<h2>' + st.t + '</h2><p>' + st.x + '</p>' +
+      (st.tip ? '<div class="box"><b>نصيحة:</b> ' + st.tip + '</div>' : '') +
+      (st.warn ? '<div class="box warn"><b>انتبه:</b> ' + st.warn + '</div>' : '') +
+      (canSpeak ? '<button class="listen" data-act="speak">🔊 اسمع الخطوة</button>' : '') +
+      '</div>' +
+      '<div class="nav"><button class="btn-alt" data-act="prev"' + (V.i === 0 ? " disabled" : "") + '>→ السابق</button>' +
+      '<button class="btn-main" data-act="next">' + (V.i === L.steps.length - 1 ? "اختبر نفسك ←" : "التالي ←") + '</button></div>';
+  } else {
+    var q = L.quiz, opts = "", fb = "";
+    q.o.forEach(function (o, k) {
+      var cls = "opt";
+      if (V.pick !== null) { if (k === q.a) cls += " ok"; else if (k === V.pick) cls += " no"; }
+      opts += '<button class="' + cls + '" data-pick="' + k + '"' + (V.pick !== null ? " disabled" : "") + '>' + o + '</button>';
+    });
+    if (V.pick !== null) fb = V.pick === q.a ?
+      '<p class="fb ok">أحسنت! إجابة صحيحة. أكملت هذا الدرس.</p>' :
+      '<p class="fb no">ليست صحيحة. الإجابة الصحيحة موضّحة باللون الأخضر. يمكنك قراءة الدرس مرة أخرى.</p>';
+    html = head + '<h2>' + L.title + '</h2>' + bar +
+      '<div class="step"><span class="kicker">سؤال قصير</span><h2>' + q.q + '</h2><div class="opts">' + opts + '</div>' + fb + '</div>' +
+      '<div class="nav"><button class="btn-alt" data-act="prev">→ السابق</button>' +
+      (V.pick !== null ? '<button class="btn-main" data-act="home">كل الدروس ←</button>' : '') + '</div>';
+  }
+  app.innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+function render() { applyScale(); if (V.id) renderLesson(); else renderHome(); }
+
+function mark(L) {
+  var p = S.prog[L.id] || { step: 0, done: false };
+  if (V.i > p.step) p.step = V.i;
+  S.prog[L.id] = p; save();
+}
+
+app.addEventListener("click", function (e) {
+  var el = e.target.closest("button");
+  if (!el) return;
+  if (el.hasAttribute("data-open")) { V = { id: el.getAttribute("data-open"), i: 0, pick: null }; var p = S.prog[V.id]; if (p && !p.done && p.step > 0) V.i = Math.min(p.step, lessonById(V.id).steps.length - 1); render(); return; }
+  if (el.hasAttribute("data-pick")) {
+    var L = lessonById(V.id); V.pick = Number(el.getAttribute("data-pick"));
+    if (V.pick === L.quiz.a) { var pr = S.prog[L.id] || { step: 0, done: false }; pr.done = true; pr.step = L.steps.length; S.prog[L.id] = pr; save(); }
+    render(); return;
+  }
+  var a = el.getAttribute("data-act");
+  if (a === "smaller") { S.scale = Math.max(0.9, +(S.scale - 0.15).toFixed(2)); save(); render(); }
+  else if (a === "bigger") { S.scale = Math.min(1.6, +(S.scale + 0.15).toFixed(2)); save(); render(); }
+  else if (a === "home") { try { window.speechSynthesis.cancel(); } catch (x) {} V = { id: null, i: 0, pick: null }; render(); }
+  else if (a === "prev") { if (V.i > 0) { V.i--; V.pick = null; render(); } }
+  else if (a === "next") { var Ln = lessonById(V.id); V.i++; V.pick = null; mark(Ln); render(); }
+  else if (a === "speak") {
+    try {
+      var s = lessonById(V.id).steps[V.i], u = new SpeechSynthesisUtterance(s.t + ". " + s.x);
+      u.lang = "ar"; u.rate = 0.85; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+    } catch (x) {}
+  }
+});
+
+render();
+</script>
+</body>
+</html>
