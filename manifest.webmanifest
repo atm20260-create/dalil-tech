@@ -1,0 +1,33 @@
+{
+  "name": "دليل التقنية للجميع",
+  "short_name": "دليل التقنية",
+  "description": "دروس عربية بسيطة: فتح حساب جوجل، الأمان على الإنترنت، البريد، ومكالمات الفيديو.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F2F6F7",
+  "theme_color": "#0A6B73",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

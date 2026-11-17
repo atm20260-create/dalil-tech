@@ -3,6 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0A6B73">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="دليل التقنية">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>دليل التقنية للجميع</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
 <style>
@@ -94,6 +101,8 @@ p { margin: 0; }
 .fb { font-weight: 800; }
 .fb.ok { color: var(--good); }
 .fb.no { color: var(--bad); }
+.install { display: flex; flex-direction: column; gap: 10px; background: var(--tip-bg); border-radius: 16px; padding: 16px; }
+.install p { font-size: .85em; line-height: 1.6; }
 .foot { color: var(--muted); font-size: .75em; }
 @media (prefers-reduced-motion: no-preference) { .meter i { transition: width .3s; } }
 body{margin:0}
@@ -180,6 +189,10 @@ function lessonById(id) { for (var i = 0; i < LESSONS.length; i++) if (LESSONS[i
 
 var V = { id: null, i: 0, pick: null };
 var app = document.getElementById("app");
+var deferredInstall = null;
+var isStandalone = false;
+try { isStandalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true; } catch (e) {}
+var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent || "");
 var canSpeak = false;
 try { canSpeak = !!(window.speechSynthesis && window.SpeechSynthesisUtterance); } catch (e) {}
 
@@ -190,6 +203,17 @@ function topBar() {
     '<div class="sizes"><span>حجم الخط</span>' +
     '<button class="chip" data-act="smaller" aria-label="تصغير الخط">أ-</button>' +
     '<button class="chip" data-act="bigger" aria-label="تكبير الخط">أ+</button></div></div>';
+}
+
+function installCard() {
+  if (isStandalone) return "";
+  if (deferredInstall) {
+    return '<div class="install"><b>ثبّت التطبيق على هاتفك</b><p>يظهر على الشاشة الرئيسية ويعمل بدون إنترنت.</p><button class="btn-main" style="min-height:56px;border-radius:14px;border:2px solid var(--accent);font-weight:800" data-act="install">تثبيت التطبيق</button></div>';
+  }
+  if (isIOS) {
+    return '<div class="install"><b>ثبّت التطبيق على الآيفون</b><p>اضغط زر المشاركة في سفاري، ثم اختر «إضافة إلى الشاشة الرئيسية».</p></div>';
+  }
+  return '<div class="install"><b>ثبّت التطبيق على هاتفك</b><p>من قائمة المتصفح (النقاط الثلاث) اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».</p></div>';
 }
 
 function renderHome() {
@@ -205,6 +229,7 @@ function renderHome() {
   });
   app.innerHTML = topBar() +
     '<div><h1>تعلّم التقنية خطوة خطوة</h1><p class="lead">دروس بسيطة لكل من يريد استخدام الهاتف والإنترنت بثقة. اختر درساً، وكل شاشة فيها خطوة واحدة فقط.</p></div>' +
+    installCard() +
     '<div class="list">' + cards + '</div>' +
     '<p class="foot">أكملت ' + n(doneCount) + ' من ' + n(LESSONS.length) + ' دروس. تقدمك محفوظ في هذا الجهاز.</p>';
 }
@@ -266,6 +291,7 @@ app.addEventListener("click", function (e) {
   else if (a === "home") { try { window.speechSynthesis.cancel(); } catch (x) {} V = { id: null, i: 0, pick: null }; render(); }
   else if (a === "prev") { if (V.i > 0) { V.i--; V.pick = null; render(); } }
   else if (a === "next") { var Ln = lessonById(V.id); V.i++; V.pick = null; mark(Ln); render(); }
+  else if (a === "install") { if (deferredInstall) { deferredInstall.prompt(); deferredInstall.userChoice.then(function () { deferredInstall = null; render(); }); } }
   else if (a === "speak") {
     try {
       var s = lessonById(V.id).steps[V.i], u = new SpeechSynthesisUtterance(s.t + ". " + s.x);
@@ -273,6 +299,12 @@ app.addEventListener("click", function (e) {
     } catch (x) {}
   }
 });
+
+window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); deferredInstall = e; if (!V.id) render(); });
+window.addEventListener("appinstalled", function () { deferredInstall = null; isStandalone = true; if (!V.id) render(); });
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); });
+}
 
 render();
 </script>
